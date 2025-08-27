@@ -1,4 +1,5 @@
-﻿using KafeAPI.Application.Dtos.CategoryDtos;
+﻿using AutoMapper;
+using KafeAPI.Application.Dtos.CategoryDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
@@ -8,35 +9,43 @@ namespace KafeAPI.Application.Services.Concrete
     public class CategoryService : ICategoryService
     {
         private readonly IGenericRepository<Category> _genericRepository;
-
-        public CategoryService(IGenericRepository<Category> genericRepository)
+        private readonly IMapper _mapper;
+        public CategoryService(IGenericRepository<Category> genericRepository, IMapper mapper)
         {
             _genericRepository = genericRepository;
+            _mapper = mapper;
         }
 
-        public Task<List<ResultCategoryDto>> GetAllCategories()
+        public async Task<List<ResultCategoryDto>> GetAllCategories()
         {
-            throw new NotImplementedException();
+            var categories = await _genericRepository.GetAllAsync();
+            var result = _mapper.Map<List<ResultCategoryDto>>(categories);
+            return result;
         }
 
-        public Task<DetailCategoryDto> GetByIdCategory(int id)
+        public async Task<DetailCategoryDto> GetByIdCategory(int id)
         {
-            throw new NotImplementedException();
+            var category = await _genericRepository.GetByIdAsync(id);
+            var result = _mapper.Map<DetailCategoryDto>(category);
+            return result;
         }
 
-        public Task UpdateCategory(UpdateCategoryDto dto)
+        public async Task UpdateCategory(UpdateCategoryDto dto)
         {
-            throw new NotImplementedException();
+            var category = _mapper.Map<Category>(dto);
+            await _genericRepository.UpdateAsync(category);
         }
 
-        public Task AddCategory(CreateCategoryDto dto)
+        public async Task AddCategory(CreateCategoryDto dto)
         {
-            throw new NotImplementedException();
+            var category = _mapper.Map<Category>(dto);
+            await _genericRepository.AddAsync(category);
         }
 
-        public Task DeleteCategory(int id)
+        public async Task DeleteCategory(int id)
         {
-            throw new NotImplementedException();
+            var category = await _genericRepository.GetByIdAsync(id);
+            await _genericRepository.DeleteAsync(category);
         }
     }
 }
