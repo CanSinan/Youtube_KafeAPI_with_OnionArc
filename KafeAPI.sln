@@ -17,10 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafeAPI.Persistence", "Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafeAPI.API", "Presentation\KafeAPI.API\KafeAPI.API.csproj", "{E573CC20-38A5-7706-95CB-FE1B928C1FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafeAPI.AppHost", "KafeAPI.AppHost\KafeAPI.AppHost.csproj", "{48EBD093-8D15-4D5E-976F-AE649F8F20F1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafeAPI.ServiceDefaults", "KafeAPI.ServiceDefaults\KafeAPI.ServiceDefaults.csproj", "{7C776613-5266-8C78-51DF-0283FB8DF364}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,14 +39,6 @@ Global
 		{E573CC20-38A5-7706-95CB-FE1B928C1FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E573CC20-38A5-7706-95CB-FE1B928C1FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E573CC20-38A5-7706-95CB-FE1B928C1FB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48EBD093-8D15-4D5E-976F-AE649F8F20F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48EBD093-8D15-4D5E-976F-AE649F8F20F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48EBD093-8D15-4D5E-976F-AE649F8F20F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48EBD093-8D15-4D5E-976F-AE649F8F20F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C776613-5266-8C78-51DF-0283FB8DF364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C776613-5266-8C78-51DF-0283FB8DF364}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C776613-5266-8C78-51DF-0283FB8DF364}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C776613-5266-8C78-51DF-0283FB8DF364}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
