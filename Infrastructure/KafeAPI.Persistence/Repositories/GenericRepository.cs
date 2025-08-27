@@ -29,12 +29,12 @@ namespace KafeAPI.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(T entity)
+        public async Task UpdateAsync(T entity)
         {
             _table.Update(entity);  
             await _context.SaveChangesAsync();
         }
-        public async Task Delete(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _table.Remove(entity);
             await _context.SaveChangesAsync();
