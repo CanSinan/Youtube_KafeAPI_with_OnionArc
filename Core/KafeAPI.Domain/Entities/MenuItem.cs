@@ -1,6 +1,6 @@
 ﻿namespace KafeAPI.Domain.Entities
 {
-    public class MenuItems
+    public class MenuItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
