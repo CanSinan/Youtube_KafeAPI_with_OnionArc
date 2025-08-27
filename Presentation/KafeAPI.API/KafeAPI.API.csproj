@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Infrastructure\KafeAPI.Persistence\KafeAPI.Persistence.csproj" />
+    <ProjectReference Include="..\..\Core\KafeAPI.Application\KafeAPI.Application.csproj" />
+    <ProjectReference Include="..\..\KafeAPI.ServiceDefaults\KafeAPI.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
