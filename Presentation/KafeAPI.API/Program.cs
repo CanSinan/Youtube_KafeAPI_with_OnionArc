@@ -5,7 +5,6 @@ using KafeAPI.Application.Services.Concrete;
 using KafeAPI.Persistence.AppContext;
 using KafeAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +33,7 @@ var app = builder.Build();
 builder.Services.AddEndpointsApiExplorer();
 app.MapScalarApiReference(opt =>
 {
-    opt.Title = "KafeAPI v1";
+    opt.Title = "Kafe API v1";
     opt.Theme = ScalarTheme.BluePlanet;
     opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
 });
