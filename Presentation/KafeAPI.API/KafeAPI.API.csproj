@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\KafeAPI.Application\KafeAPI.Application.csproj" />
-    <ProjectReference Include="..\..\KafeAPI.ServiceDefaults\KafeAPI.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\KafeAPI.Persistence\KafeAPI.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

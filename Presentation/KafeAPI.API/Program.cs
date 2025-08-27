@@ -1,16 +1,33 @@
+using KafeAPI.Application.Interfaces;
+using KafeAPI.Application.Mapping;
+using KafeAPI.Application.Services.Abstract;
+using KafeAPI.Application.Services.Concrete;
+using KafeAPI.Persistence.AppContext;
+using KafeAPI.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
 
 // Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    var configuration = builder.Configuration.GetConnectionString("DefaultConnection");
+    opt.UseSqlServer(configuration);
+});
 
 builder.Services.AddControllers();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+
+builder.Services.AddAutoMapper(typeof(GeneralMapping));
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
-app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
