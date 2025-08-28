@@ -1,3 +1,4 @@
+using KafeAPI.Application.Dtos.CategoryDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Mapping;
 using KafeAPI.Application.Services.Abstract;
@@ -5,8 +6,8 @@ using KafeAPI.Application.Services.Concrete;
 using KafeAPI.Persistence.AppContext;
 using KafeAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +24,13 @@ builder.Services.AddControllers();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
-
 builder.Services.AddAutoMapper(cfg =>
 {
     // burada ekstra özel konfigurasyonlar ekleyebiliriz.
 }, typeof(GeneralMapping).Assembly);
 
+builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
