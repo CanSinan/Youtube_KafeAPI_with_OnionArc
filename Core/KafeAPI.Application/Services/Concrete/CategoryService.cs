@@ -84,16 +84,68 @@ namespace KafeAPI.Application.Services.Concrete
 
         }
 
-        public async Task UpdateCategory(UpdateCategoryDto dto)
+        public async Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto dto)
         {
-            var category = _mapper.Map<Category>(dto);
-            await _genericRepository.UpdateAsync(category);
+            try
+            {
+                var category = await _genericRepository.GetByIdAsync(dto.Id);
+                if (category is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Kategori bulunamadı"
+                    };
+                }
+                var categoryMap = _mapper.Map(dto, category);
+
+                await _genericRepository.UpdateAsync(categoryMap);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Kategori güncellendi"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+
         }
 
-        public async Task AddCategory(CreateCategoryDto dto)
+        public async Task<ResponseDto<object>> AddCategory(CreateCategoryDto dto)
         {
-            var category = _mapper.Map<Category>(dto);
-            await _genericRepository.AddAsync(category);
+            try
+            {
+                var category = _mapper.Map<Category>(dto);
+                await _genericRepository.AddAsync(category);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Kategori oluşturuldu"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+
         }
 
         public async Task<ResponseDto<object>> DeleteCategory(int id)
@@ -129,7 +181,7 @@ namespace KafeAPI.Application.Services.Concrete
                     Message = "Bir hata oluştu"
                 };
             }
-           
+
         }
     }
 }

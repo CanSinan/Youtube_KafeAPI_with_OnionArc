@@ -44,13 +44,24 @@ namespace KafeAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
         {
-            await _categoryService.AddCategory(dto);
-            return Ok("Kategori Oluşturuldu");
+            var result = await _categoryService.AddCategory(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryDto dto)
         {
-            await _categoryService.UpdateCategory(dto);
+            var result = await _categoryService.UpdateCategory(dto);
+            if (!result.Success)
+            {
+                if (result.ErrorCodes == ErrorCodes.NotFound)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
             return Ok("Kategori Güncellendi");
         }
         [HttpDelete]
