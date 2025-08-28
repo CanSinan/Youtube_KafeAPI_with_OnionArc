@@ -5,6 +5,7 @@ using KafeAPI.Application.Services.Concrete;
 using KafeAPI.Persistence.AppContext;
 using KafeAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +24,12 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 
-builder.Services.AddAutoMapper(typeof(GeneralMapping));
+builder.Services.AddAutoMapper(cfg =>
+{
+    // burada ekstra özel konfigurasyonlar ekleyebiliriz.
+}, typeof(GeneralMapping).Assembly);
+
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

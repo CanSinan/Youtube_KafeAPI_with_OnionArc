@@ -38,8 +38,9 @@ namespace KafeAPI.Application.Services.Concrete
 
         public async Task UpdateMenuItem(UpdateMenuItemDto dto)
         {
-            var menuItem = _mapper.Map<MenuItem>(dto);
-            await _genericRepository.UpdateAsync(menuItem);
+            var menuItem = await _genericRepository.GetByIdAsync(dto.Id);
+            var menuItemMap = _mapper.Map(dto,menuItem);
+            await _genericRepository.UpdateAsync(menuItemMap);
         }
 
         public async Task DeleteMenuItem(int id)
