@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using KafeAPI.Application.Dtos.CategoryDtos;
 using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace KafeAPI.Application.Services.Concrete
 {
@@ -11,10 +13,14 @@ namespace KafeAPI.Application.Services.Concrete
     {
         private readonly IGenericRepository<Category> _genericRepository;
         private readonly IMapper _mapper;
-        public CategoryService(IGenericRepository<Category> genericRepository, IMapper mapper)
+        private readonly IValidator<CreateCategoryDto> _createValidator;
+        private readonly IValidator<UpdateCategoryDto> _updateValidator;
+        public CategoryService(IGenericRepository<Category> genericRepository, IMapper mapper, IValidator<CreateCategoryDto> createValidator, IValidator<UpdateCategoryDto> updateValidator)
         {
             _genericRepository = genericRepository;
             _mapper = mapper;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
         }
 
         public async Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories()
@@ -83,11 +89,57 @@ namespace KafeAPI.Application.Services.Concrete
             }
 
         }
+        public async Task<ResponseDto<object>> AddCategory(CreateCategoryDto dto)
+        {
+            try
+            {
+                var validate = await _createValidator.ValidateAsync(dto);
+                if (!validate.IsValid)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.ValidationError,
+                        Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
+                    };
+                }
+                var category = _mapper.Map<Category>(dto);
+                await _genericRepository.AddAsync(category);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Kategori oluşturuldu"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+        }
 
         public async Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto dto)
         {
             try
             {
+                var validate = await _updateValidator.ValidateAsync(dto);
+                if (!validate.IsValid)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.ValidationError,
+                        Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
+                    };
+                }
                 var category = await _genericRepository.GetByIdAsync(dto.Id);
                 if (category is null)
                 {
@@ -122,32 +174,7 @@ namespace KafeAPI.Application.Services.Concrete
 
         }
 
-        public async Task<ResponseDto<object>> AddCategory(CreateCategoryDto dto)
-        {
-            try
-            {
-                var category = _mapper.Map<Category>(dto);
-                await _genericRepository.AddAsync(category);
-                return new ResponseDto<object>
-                {
-                    Success = true,
-                    Data = null,
-                    Message = "Kategori oluşturuldu"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseDto<object>
-                {
-                    Success = false,
-                    Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
-                    Message = "Bir hata oluştu"
-                };
-            }
-
-        }
-
+       
         public async Task<ResponseDto<object>> DeleteCategory(int id)
         {
             try

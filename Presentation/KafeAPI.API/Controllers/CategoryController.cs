@@ -47,6 +47,10 @@ namespace KafeAPI.API.Controllers
             var result = await _categoryService.AddCategory(dto);
             if (!result.Success)
             {
+                if (result.ErrorCodes == ErrorCodes.ValidationError)
+                {
+                    return Ok(result);
+                }
                 return BadRequest(result);
             }
             return Ok(result);
@@ -57,12 +61,13 @@ namespace KafeAPI.API.Controllers
             var result = await _categoryService.UpdateCategory(dto);
             if (!result.Success)
             {
-                if (result.ErrorCodes == ErrorCodes.NotFound)
+
+                if (result.ErrorCodes == ErrorCodes.NotFound || result.ErrorCodes == ErrorCodes.ValidationError)
                     return Ok(result);
 
                 return BadRequest(result);
             }
-            return Ok("Kategori Güncellendi");
+            return Ok(result);
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory(int id)
