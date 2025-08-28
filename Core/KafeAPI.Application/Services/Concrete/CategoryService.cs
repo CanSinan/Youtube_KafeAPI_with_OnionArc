@@ -45,17 +45,43 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     ErrorCodes = ErrorCodes.Exception,
-                    Message = ex.Message
+                    Message = "Bir hata oluştu"
                 };
             }
-           
+
         }
 
-        public async Task<DetailCategoryDto> GetByIdCategory(int id)
+        public async Task<ResponseDto<DetailCategoryDto>> GetByIdCategory(int id)
         {
-            var category = await _genericRepository.GetByIdAsync(id);
-            var result = _mapper.Map<DetailCategoryDto>(category);
-            return result;
+            try
+            {
+                var category = await _genericRepository.GetByIdAsync(id);
+                if (category is null)
+                {
+                    return new ResponseDto<DetailCategoryDto>
+                    {
+                        Success = false,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Kategori bulunamadı"
+                    };
+                }
+                var result = _mapper.Map<DetailCategoryDto>(category);
+                return new ResponseDto<DetailCategoryDto>
+                {
+                    Success = true,
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<DetailCategoryDto>
+                {
+                    Success = false,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+
         }
 
         public async Task UpdateCategory(UpdateCategoryDto dto)
@@ -70,10 +96,40 @@ namespace KafeAPI.Application.Services.Concrete
             await _genericRepository.AddAsync(category);
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task<ResponseDto<object>> DeleteCategory(int id)
         {
-            var category = await _genericRepository.GetByIdAsync(id);
-            await _genericRepository.DeleteAsync(category);
+            try
+            {
+                var category = await _genericRepository.GetByIdAsync(id);
+                if (category is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Kategori bulunamadı"
+                    };
+                }
+                await _genericRepository.DeleteAsync(category);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Kategori silindi"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+           
         }
     }
 }
