@@ -33,7 +33,12 @@ namespace KafeAPI.API.Controllers
         public async Task<IActionResult> GetByIdCategory(int id)
         {
             var result = await _categoryService.GetByIdCategory(id);
-
+            if (!result.Success)
+            {
+                if (result.ErrorCodes == ErrorCodes.NotFound)
+                    return Ok(result);
+                return BadRequest(result);
+            }
             return Ok(result);
         }
         [HttpPost]
@@ -51,8 +56,14 @@ namespace KafeAPI.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            await _categoryService.DeleteCategory(id);
-            return Ok("Kategori Silindi");
+            var result = await _categoryService.DeleteCategory(id);
+            if (!result.Success)
+            {
+                if (result.ErrorCodes == ErrorCodes.NotFound)
+                    return Ok(result);
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }
