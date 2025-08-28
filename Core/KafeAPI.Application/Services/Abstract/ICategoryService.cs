@@ -7,8 +7,8 @@ namespace KafeAPI.Application.Services.Abstract
     {
         Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories();
         Task<ResponseDto<DetailCategoryDto>> GetByIdCategory(int id);
-        Task AddCategory(CreateCategoryDto dto);
-        Task UpdateCategory(UpdateCategoryDto dto);
+        Task<ResponseDto<object>> AddCategory(CreateCategoryDto dto);
+        Task<ResponseDto<object>> UpdateCategory(UpdateCategoryDto dto);
         Task<ResponseDto<object>> DeleteCategory(int id);
     }
 }
