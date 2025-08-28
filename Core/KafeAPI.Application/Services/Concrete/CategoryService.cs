@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KafeAPI.Application.Dtos.CategoryDtos;
+using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
@@ -16,11 +17,38 @@ namespace KafeAPI.Application.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<List<ResultCategoryDto>> GetAllCategories()
+        public async Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategories()
         {
-            var categories = await _genericRepository.GetAllAsync();
-            var result = _mapper.Map<List<ResultCategoryDto>>(categories);
-            return result;
+            try
+            {
+                var categories = await _genericRepository.GetAllAsync();
+                if (categories.Count == 0)
+                {
+                    return new ResponseDto<List<ResultCategoryDto>>
+                    {
+                        Success = false,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Kategori bulunamadı"
+                    };
+                }
+                var result = _mapper.Map<List<ResultCategoryDto>>(categories);
+                return new ResponseDto<List<ResultCategoryDto>>
+                {
+                    Success = true,
+                    Data = result,
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ResponseDto<List<ResultCategoryDto>>
+                {
+                    Success = false,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = ex.Message
+                };
+            }
+           
         }
 
         public async Task<DetailCategoryDto> GetByIdCategory(int id)

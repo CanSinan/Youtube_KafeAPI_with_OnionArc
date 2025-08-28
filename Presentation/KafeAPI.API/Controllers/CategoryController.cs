@@ -1,4 +1,5 @@
 ﻿using KafeAPI.Application.Dtos.CategoryDtos;
+using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,20 @@ namespace KafeAPI.API.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var result = await _categoryService.GetAllCategories();
+            if (!result.Success)
+            {
+                if (result.ErrorCodes == ErrorCodes.NotFound)
+                    return Ok(result);
+
+                return BadRequest(result);
+            }
             return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdCategory(int id)
         {
             var result = await _categoryService.GetByIdCategory(id);
+
             return Ok(result);
         }
         [HttpPost]
