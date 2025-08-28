@@ -1,7 +1,6 @@
 ﻿using KafeAPI.Application.Dtos.CategoryDtos;
 using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Services.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KafeAPI.API.Controllers
