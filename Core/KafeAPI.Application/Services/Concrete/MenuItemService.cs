@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using KafeAPI.Application.Dtos.CategoryDtos;
 using KafeAPI.Application.Dtos.MenuItemDtos;
+using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
@@ -8,45 +11,230 @@ namespace KafeAPI.Application.Services.Concrete
 {
     public class MenuItemService : IMenuItemService
     {
-        private readonly IGenericRepository<MenuItem> _genericRepository;
+        private readonly IGenericRepository<MenuItem> _genericMenuItemRepository;
+        private readonly IGenericRepository<Category> _genericCategoryRepository;
         private readonly IMapper _mapper;
-
-        public MenuItemService(IGenericRepository<MenuItem> genericRepository, IMapper mapper)
+        private readonly IValidator<CreateMenuItemDto> _createValidator;
+        private readonly IValidator<UpdateMenuItemDto> _updateValidator;
+        public MenuItemService(IGenericRepository<MenuItem> genericRepository, IMapper mapper, IValidator<CreateMenuItemDto> createValidator, IValidator<UpdateMenuItemDto> updateValidator, IGenericRepository<Category> genericCategoryRepository)
         {
-            _genericRepository = genericRepository;
+            _genericMenuItemRepository = genericRepository;
             _mapper = mapper;
+            _createValidator = createValidator;
+            _updateValidator = updateValidator;
+            _genericCategoryRepository = genericCategoryRepository;
         }
 
-        public async Task<List<ResultMenuItemDto>> GetAllMenuItems()
+        public async Task<ResponseDto<List<ResultMenuItemDto>>> GetAllMenuItems()
         {
-            var menuItems = await _genericRepository.GetAllAsync();
-            var result = _mapper.Map<List<ResultMenuItemDto>>(menuItems);
-            return result;
+            try
+            {
+                var menuItems = await _genericMenuItemRepository.GetAllAsync();
+                var category = await _genericCategoryRepository.GetAllAsync();
+                if (menuItems.Count == 0)
+                {
+                    return new ResponseDto<List<ResultMenuItemDto>>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Menu Items bulunamadı"
+                    };
+                }
+                var result = _mapper.Map<List<ResultMenuItemDto>>(menuItems);
+                return new ResponseDto<List<ResultMenuItemDto>>
+                {
+                    Success = true,
+                    Data = result,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<List<ResultMenuItemDto>>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu."
+                };
+            }
         }
 
-        public async Task<DetailMenuItemDto> GetByIdMenuItem(int id)
+        public async Task<ResponseDto<DetailMenuItemDto>> GetByIdMenuItem(int id)
         {
-            var menuItem = await _genericRepository.GetByIdAsync(id);
-            var result = _mapper.Map<DetailMenuItemDto>(menuItem);
-            return result;
+            try
+            {
+                var menuItem = await _genericMenuItemRepository.GetByIdAsync(id);
+                var category = await _genericCategoryRepository.GetByIdAsync(menuItem.CategoryId);
+                if (menuItem is null)
+                {
+                    return new ResponseDto<DetailMenuItemDto>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Menu Item bulunamadı"
+                    };
+                }
+                var result = _mapper.Map<DetailMenuItemDto>(menuItem);
+                return new ResponseDto<DetailMenuItemDto>
+                {
+                    Success = true,
+                    Data = result,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<DetailMenuItemDto>
+                {
+                    Success = false,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
         }
-        public async Task AddMenuItem(CreateMenuItemDto dto)
+        public async Task<ResponseDto<object>> AddMenuItem(CreateMenuItemDto dto)
         {
-            var menuItem = _mapper.Map<MenuItem>(dto);
-            await _genericRepository.AddAsync(menuItem);
+            try
+            {
+                var validate = await _createValidator.ValidateAsync(dto);
+                if (!validate.IsValid)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.ValidationError,
+                        Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
+                    };
+                }
+                var chechkCategory = await _genericCategoryRepository.GetByIdAsync(dto.CategoryId);
+                if (chechkCategory is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = dto,
+                        Message = "İlgili kategori bulunamadı",
+                        ErrorCodes = ErrorCodes.NotFound
+                    };
+                }
+                var menuItem = _mapper.Map<MenuItem>(dto);
+                await _genericMenuItemRepository.AddAsync(menuItem);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Menu Item oluşturuldu"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+            
         }
 
-        public async Task UpdateMenuItem(UpdateMenuItemDto dto)
+        public async Task<ResponseDto<object>> UpdateMenuItem(UpdateMenuItemDto dto)
         {
-            var menuItem = await _genericRepository.GetByIdAsync(dto.Id);
-            var menuItemMap = _mapper.Map(dto,menuItem);
-            await _genericRepository.UpdateAsync(menuItemMap);
+            try
+            {
+                var validate = await _updateValidator.ValidateAsync(dto);
+                if (!validate.IsValid)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.ValidationError,
+                        Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
+                    };
+                }
+                var menuItem = await _genericMenuItemRepository.GetByIdAsync(dto.Id);
+                if (menuItem is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Menu Item bulunamadı"
+                    };
+                }
+                var chechkCategory = await _genericCategoryRepository.GetByIdAsync(dto.CategoryId);
+                if (chechkCategory is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = dto,
+                        Message = "İlgili kategori bulunamadı",
+                        ErrorCodes = ErrorCodes.NotFound
+                    };
+                }
+                var menuItemMap = _mapper.Map(dto, menuItem);
+
+                await _genericMenuItemRepository.UpdateAsync(menuItemMap);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Menu Item güncellendi"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+           
         }
 
-        public async Task DeleteMenuItem(int id)
+        public async Task<ResponseDto<object>> DeleteMenuItem(int id)
         {
-            var menuItem = await _genericRepository.GetByIdAsync(id);
-            await _genericRepository.DeleteAsync(menuItem);
+            try
+            {
+                var menuItem = await _genericMenuItemRepository.GetByIdAsync(id);
+                if (menuItem is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCodes = ErrorCodes.NotFound,
+                        Message = "Menu Item bulunamadı"
+                    };
+                }
+                await _genericMenuItemRepository.DeleteAsync(menuItem);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Menu Item silindi"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    ErrorCodes = ErrorCodes.Exception,
+                    Message = "Bir hata oluştu"
+                };
+            }
+            
         }
     }
 }

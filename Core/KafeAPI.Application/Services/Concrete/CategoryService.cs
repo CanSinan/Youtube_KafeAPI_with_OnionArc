@@ -11,13 +11,13 @@ namespace KafeAPI.Application.Services.Concrete
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<Category> _genericRepository;
+        private readonly IGenericRepository<Category> _genericCategoryRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateCategoryDto> _createValidator;
         private readonly IValidator<UpdateCategoryDto> _updateValidator;
         public CategoryService(IGenericRepository<Category> genericRepository, IMapper mapper, IValidator<CreateCategoryDto> createValidator, IValidator<UpdateCategoryDto> updateValidator)
         {
-            _genericRepository = genericRepository;
+            _genericCategoryRepository = genericRepository;
             _mapper = mapper;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
@@ -27,7 +27,7 @@ namespace KafeAPI.Application.Services.Concrete
         {
             try
             {
-                var categories = await _genericRepository.GetAllAsync();
+                var categories = await _genericCategoryRepository.GetAllAsync();
                 if (categories.Count == 0)
                 {
                     return new ResponseDto<List<ResultCategoryDto>>
@@ -61,12 +61,13 @@ namespace KafeAPI.Application.Services.Concrete
         {
             try
             {
-                var category = await _genericRepository.GetByIdAsync(id);
+                var category = await _genericCategoryRepository.GetByIdAsync(id);
                 if (category is null)
                 {
                     return new ResponseDto<DetailCategoryDto>
                     {
                         Success = false,
+                        Data = null,
                         ErrorCodes = ErrorCodes.NotFound,
                         Message = "Kategori bulunamadı"
                     };
@@ -105,7 +106,7 @@ namespace KafeAPI.Application.Services.Concrete
                     };
                 }
                 var category = _mapper.Map<Category>(dto);
-                await _genericRepository.AddAsync(category);
+                await _genericCategoryRepository.AddAsync(category);
                 return new ResponseDto<object>
                 {
                     Success = true,
@@ -140,7 +141,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
-                var category = await _genericRepository.GetByIdAsync(dto.Id);
+                var category = await _genericCategoryRepository.GetByIdAsync(dto.Id);
                 if (category is null)
                 {
                     return new ResponseDto<object>
@@ -153,7 +154,7 @@ namespace KafeAPI.Application.Services.Concrete
                 }
                 var categoryMap = _mapper.Map(dto, category);
 
-                await _genericRepository.UpdateAsync(categoryMap);
+                await _genericCategoryRepository.UpdateAsync(categoryMap);
                 return new ResponseDto<object>
                 {
                     Success = true,
@@ -174,12 +175,12 @@ namespace KafeAPI.Application.Services.Concrete
 
         }
 
-       
+
         public async Task<ResponseDto<object>> DeleteCategory(int id)
         {
             try
             {
-                var category = await _genericRepository.GetByIdAsync(id);
+                var category = await _genericCategoryRepository.GetByIdAsync(id);
                 if (category is null)
                 {
                     return new ResponseDto<object>
@@ -190,7 +191,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Message = "Kategori bulunamadı"
                     };
                 }
-                await _genericRepository.DeleteAsync(category);
+                await _genericCategoryRepository.DeleteAsync(category);
                 return new ResponseDto<object>
                 {
                     Success = true,

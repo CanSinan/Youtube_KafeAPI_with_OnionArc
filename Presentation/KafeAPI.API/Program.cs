@@ -8,6 +8,7 @@ using KafeAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using FluentValidation;
+using KafeAPI.Application.Dtos.MenuItemDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateMenuItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateMenuItemDto>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
