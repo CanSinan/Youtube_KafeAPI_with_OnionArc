@@ -37,7 +37,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Success = false,
                         Data = null,
                         Message = "Masalar bulunamadı",
-                        ErrorCodes = ErrorCodes.NotFound
+                        ErrorCode = ErrorCodes.NotFound
                     };
                 }
                 var result = _mapper.Map<List<ResultTableDto>>(tables);
@@ -54,11 +54,78 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
 
+        public async Task<ResponseDto<List<ResultTableDto>>> GetAllActiveTablesGeneric()
+        {
+            try
+            {
+                var tables = await _genericTableRepository.GetAllAsync();
+                tables = tables.Where(t => t.IsActive == true).ToList();
+                if (tables.Count == 0)
+                {
+                    return new ResponseDto<List<ResultTableDto>>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Aktif Masalar bulunamadı",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                var result = _mapper.Map<List<ResultTableDto>>(tables);
+                return new ResponseDto<List<ResultTableDto>>
+                {
+                    Success = true,
+                    Data = result,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<List<ResultTableDto>>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir sorun oluştu",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+        public async Task<ResponseDto<List<ResultTableDto>>> GetAllActiveTables()
+        {
+            try
+            {
+                var tables = await _tableRepository.GetAllActiveTablesAsync();
+                if (tables.Count == 0)
+                {
+                    return new ResponseDto<List<ResultTableDto>>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Aktif Masalar bulunamadı",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                var result = _mapper.Map<List<ResultTableDto>>(tables);
+                return new ResponseDto<List<ResultTableDto>>
+                {
+                    Success = true,
+                    Data = result,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<List<ResultTableDto>>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir sorun oluştu",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
         public async Task<ResponseDto<DetailTableDto>> GetByIdTable(int id)
         {
             try
@@ -71,7 +138,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Success = false,
                         Data = null,
                         Message = "Masa bulunamadı",
-                        ErrorCodes = ErrorCodes.NotFound
+                        ErrorCode = ErrorCodes.NotFound
                     };
                 }
                 var result = _mapper.Map<DetailTableDto>(table);
@@ -88,7 +155,7 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
@@ -105,7 +172,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Success = false,
                         Data = null,
                         Message = "Masa bulunamadı",
-                        ErrorCodes = ErrorCodes.NotFound
+                        ErrorCode = ErrorCodes.NotFound
                     };
                 }
                 var result = _mapper.Map<DetailTableDto>(table);
@@ -122,7 +189,7 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
@@ -138,21 +205,21 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
-                //var checkTable = await _genericTableRepository.GetByIdAsync(dto.TableNumber);
-                //if (checkTable != null)
-                //{
-                //    return new ResponseDto<object>
-                //    {
-                //        Success = false,
-                //        Data = null,
-                //        Message = "Bu masa numarası zaten mevcut",
-                //        ErrorCodes = ErrorCodes.DuplicateError
-                //    };
-                //}
+                var checkTable = await _tableRepository.GetByTableNumberAsync(dto.TableNumber);
+                if (checkTable != null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Bu masa numarası zaten mevcut",
+                        ErrorCode = ErrorCodes.DuplicateError
+                    };
+                }
                 var result = _mapper.Map<Table>(dto);
                 await _genericTableRepository.AddAsync(result);
                 return new ResponseDto<object>
@@ -169,7 +236,7 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
@@ -185,11 +252,10 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
-              
                 var table = await _genericTableRepository.GetByIdAsync(dto.Id);
                 if (table is null)
                 {
@@ -197,8 +263,19 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Masa bulunamadı"
+                    };
+                }
+                var checkTable = await _tableRepository.GetByTableNumberAsync(dto.TableNumber);
+                if (checkTable != null && checkTable.Id != dto.Id)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Bu masa numarası zaten mevcut",
+                        ErrorCode = ErrorCodes.DuplicateError
                     };
                 }
                 var result = _mapper.Map(dto, table);
@@ -219,7 +296,80 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+        public async Task<ResponseDto<object>> UpdateTableStatusByTableNumber(int tableNumber)
+        {
+            try
+            {
+                var table = await _tableRepository.GetByTableNumberAsync(tableNumber);
+                if (table is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCode = ErrorCodes.NotFound,
+                        Message = "Masa bulunamadı"
+                    };
+                }
+                table.IsActive = !table.IsActive;
+                await _genericTableRepository.UpdateAsync(table);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Masa güncellendi"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir sorun oluştu",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+
+        public async Task<ResponseDto<object>> UpdateTableStatusById(int id)
+        {
+            try
+            {
+                var table = await _genericTableRepository.GetByIdAsync(id);
+                if (table is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        ErrorCode = ErrorCodes.NotFound,
+                        Message = "Masa bulunamadı"
+                    };
+                }
+                table.IsActive = !table.IsActive;
+                await _genericTableRepository.UpdateAsync(table);
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Masa güncellendi"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir sorun oluştu",
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
@@ -234,7 +384,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Masa bulunamadı"
                     };
                 }
@@ -253,9 +403,11 @@ namespace KafeAPI.Application.Services.Concrete
                     Success = false,
                     Data = null,
                     Message = "Bir sorun oluştu",
-                    ErrorCodes = ErrorCodes.Exception
+                    ErrorCode = ErrorCodes.Exception
                 };
             }
         }
+
+        
     }
 }

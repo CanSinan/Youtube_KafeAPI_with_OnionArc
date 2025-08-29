@@ -37,7 +37,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Menu Items bulunamadı"
                     };
                 }
@@ -54,7 +54,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu."
                 };
             }
@@ -72,7 +72,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Menu Item bulunamadı"
                     };
                 }
@@ -88,7 +88,7 @@ namespace KafeAPI.Application.Services.Concrete
                 return new ResponseDto<DetailMenuItemDto>
                 {
                     Success = false,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -104,7 +104,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
@@ -116,7 +116,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Success = false,
                         Data = dto,
                         Message = "İlgili kategori bulunamadı",
-                        ErrorCodes = ErrorCodes.NotFound
+                        ErrorCode = ErrorCodes.NotFound
                     };
                 }
                 var menuItem = _mapper.Map<MenuItem>(dto);
@@ -134,7 +134,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -152,7 +152,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
@@ -163,7 +163,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Menu Item bulunamadı"
                     };
                 }
@@ -175,7 +175,7 @@ namespace KafeAPI.Application.Services.Concrete
                         Success = false,
                         Data = dto,
                         Message = "İlgili kategori bulunamadı",
-                        ErrorCodes = ErrorCodes.NotFound
+                        ErrorCode = ErrorCodes.NotFound
                     };
                 }
                 var menuItemMap = _mapper.Map(dto, menuItem);
@@ -194,7 +194,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -212,7 +212,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Menu Item bulunamadı"
                     };
                 }
@@ -230,7 +230,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }

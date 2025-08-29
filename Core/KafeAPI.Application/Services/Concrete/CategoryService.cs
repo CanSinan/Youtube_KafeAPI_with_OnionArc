@@ -32,7 +32,7 @@ namespace KafeAPI.Application.Services.Concrete
                     return new ResponseDto<List<ResultCategoryDto>>
                     {
                         Success = false,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Kategori bulunamadı"
                     };
                 }
@@ -49,7 +49,7 @@ namespace KafeAPI.Application.Services.Concrete
                 return new ResponseDto<List<ResultCategoryDto>>
                 {
                     Success = false,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -67,7 +67,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Kategori bulunamadı"
                     };
                 }
@@ -83,7 +83,7 @@ namespace KafeAPI.Application.Services.Concrete
                 return new ResponseDto<DetailCategoryDto>
                 {
                     Success = false,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -100,7 +100,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
@@ -119,7 +119,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -136,7 +136,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.ValidationError,
+                        ErrorCode = ErrorCodes.ValidationError,
                         Message = string.Join(" | ", validate.Errors.Select(e => e.ErrorMessage))
                     };
                 }
@@ -147,7 +147,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Kategori bulunamadı"
                     };
                 }
@@ -167,7 +167,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }
@@ -186,7 +186,7 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        ErrorCodes = ErrorCodes.NotFound,
+                        ErrorCode = ErrorCodes.NotFound,
                         Message = "Kategori bulunamadı"
                     };
                 }
@@ -204,7 +204,7 @@ namespace KafeAPI.Application.Services.Concrete
                 {
                     Success = false,
                     Data = null,
-                    ErrorCodes = ErrorCodes.Exception,
+                    ErrorCode = ErrorCodes.Exception,
                     Message = "Bir hata oluştu"
                 };
             }

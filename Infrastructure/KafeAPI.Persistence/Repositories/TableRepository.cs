@@ -20,5 +20,11 @@ namespace KafeAPI.Persistence.Repositories
             var table = await _table.FirstOrDefaultAsync(t => t.TableNumber == tableNumber);
             return table;
         }
+
+        public async Task<List<Table>> GetAllActiveTablesAsync()
+        {
+            var table = await _table.Where(t => t.IsActive == true).ToListAsync();
+            return table;
+        }
     }
 }
