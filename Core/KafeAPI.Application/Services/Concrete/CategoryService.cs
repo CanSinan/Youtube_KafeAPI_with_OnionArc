@@ -5,7 +5,6 @@ using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace KafeAPI.Application.Services.Concrete
 {

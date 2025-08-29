@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using FluentValidation;
 using KafeAPI.Application.Dtos.MenuItemDtos;
+using KafeAPI.Application.Dtos.TableDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +24,10 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddControllers();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddAutoMapper(cfg =>
 {
     // burada ekstra özel konfigurasyonlar ekleyebiliriz.
@@ -34,6 +37,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateMenuItemDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateMenuItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTableDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateTableDto>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
