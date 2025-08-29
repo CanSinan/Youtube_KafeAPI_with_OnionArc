@@ -1,25 +1,24 @@
-﻿using KafeAPI.Application.Dtos.MenuItemDtos;
+﻿using KafeAPI.Application.Dtos.TableDtos;
 using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Services.Abstract;
-using KafeAPI.Application.Services.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KafeAPI.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class MenuItemController : ControllerBase
+    public class TableController : ControllerBase
     {
-        private readonly IMenuItemService _menuItemService;
+        private readonly ITableService _tableService;
 
-        public MenuItemController(IMenuItemService menuItemService)
+        public TableController(ITableService tableService)
         {
-            _menuItemService = menuItemService;
+            _tableService = tableService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllMenuItems()
+        public async Task<IActionResult> GetAllTables()
         {
-            var result = await _menuItemService.GetAllMenuItems();
+            var result = await _tableService.GetAllTables();
             if (!result.Success)
             {
                 if (result.ErrorCodes == ErrorCodes.NotFound)
@@ -30,25 +29,36 @@ namespace KafeAPI.API.Controllers
             return Ok(result);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdMenuItem(int id)
+        public async Task<IActionResult> GetByIdTable(int id)
         {
-            var result = await _menuItemService.GetByIdMenuItem(id);
+            var result = await _tableService.GetByIdTable(id);
             if (!result.Success)
             {
                 if (result.ErrorCodes == ErrorCodes.NotFound)
                     return Ok(result);
-
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        [HttpGet("getbytablenumber/{TableNumber}")]
+        public async Task<IActionResult> GetByTableNumber(int TableNumber)
+        {
+            var result = await _tableService.GetByTableNumber(TableNumber);
+            if (!result.Success)
+            {
+                if (result.ErrorCodes == ErrorCodes.NotFound)
+                    return Ok(result);
                 return BadRequest(result);
             }
             return Ok(result);
         }
         [HttpPost]
-        public async Task<IActionResult> AddMenuItem([FromBody] CreateMenuItemDto dto)
+        public async Task<IActionResult> AddTable([FromBody] CreateTableDto dto)
         {
-            var result = await _menuItemService.AddMenuItem(dto);
+            var result = await _tableService.AddTable(dto);
             if (!result.Success)
             {
-                if (result.ErrorCodes == ErrorCodes.ValidationError || result.ErrorCodes == ErrorCodes.NotFound)
+                if (result.ErrorCodes is ErrorCodes.ValidationError or ErrorCodes.DuplicateError)
                 {
                     return Ok(result);
                 }
@@ -57,13 +67,13 @@ namespace KafeAPI.API.Controllers
             return Ok(result);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateMenuItem([FromBody] UpdateMenuItemDto dto)
+        public async Task<IActionResult> UpdateTable([FromBody] UpdateTableDto dto)
         {
-            var result = await _menuItemService.UpdateMenuItem(dto);
+            var result = await _tableService.UpdateTable(dto);
             if (!result.Success)
             {
 
-                if (result.ErrorCodes == ErrorCodes.NotFound || result.ErrorCodes == ErrorCodes.ValidationError)
+                if (result.ErrorCodes is ErrorCodes.ValidationError or ErrorCodes.NotFound)
                     return Ok(result);
 
                 return BadRequest(result);
@@ -71,9 +81,9 @@ namespace KafeAPI.API.Controllers
             return Ok(result);
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteMenuItem(int id)
+        public async Task<IActionResult> DeleteTable(int id)
         {
-            var result = await _menuItemService.DeleteMenuItem(id);
+            var result = await _tableService.DeleteTable(id);
             if (!result.Success)
             {
                 if (result.ErrorCodes == ErrorCodes.NotFound)
