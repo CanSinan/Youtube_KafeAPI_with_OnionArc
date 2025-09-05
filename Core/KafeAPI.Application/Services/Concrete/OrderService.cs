@@ -5,27 +5,33 @@ using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
+using System.Net.Http.Headers;
 
 namespace KafeAPI.Application.Services.Concrete
 {
     public class OrderService : IOrderService
     {
         private readonly IGenericRepository<Order> _genericOrderRepository;
+        private readonly IGenericRepository<OrderItem> _genericOrderItemRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateOrderDto> _createOrderValidator;
         private readonly IValidator<UpdateOrderDto> _updateOrderValidator;
-        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator)
+        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator, IGenericRepository<OrderItem> genericOrderItemRepository, IOrderRepository orderRepository)
         {
             _genericOrderRepository = genericOrderRepository;
             _mapper = mapper;
             _createOrderValidator = createOrderValidator;
             _updateOrderValidator = updateOrderValidator;
+            _genericOrderItemRepository = genericOrderItemRepository;
+            _orderRepository = orderRepository;
         }
         public async Task<ResponseDto<List<ResultOrderDto>>> GetAllOrder()
         {
             try
             {
                 var orders = await _genericOrderRepository.GetAllAsync();
+                var orderItem = await _genericOrderItemRepository.GetAllAsync();
                 if (orders.Count == 0)
                 {
                     return new ResponseDto<List<ResultOrderDto>>
@@ -55,11 +61,44 @@ namespace KafeAPI.Application.Services.Concrete
             }
         }
 
+        public async Task<ResponseDto<List<ResultOrderDto>>> GetAllOrderWithDetail()
+        {
+            try
+            {
+                var orders = await _orderRepository.GetAllOrderWithDetailAsync();
+                if (orders.Count == 0)
+                {
+                    return new ResponseDto<List<ResultOrderDto>>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Sipariş bulunamadı.",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                var result = _mapper.Map<List<ResultOrderDto>>(orders);
+                return new ResponseDto<List<ResultOrderDto>>
+                {
+                    Success = true,
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<List<ResultOrderDto>>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
         public async Task<ResponseDto<DetailOrderDto>> GetOrderById(int id)
         {
             try
             {
-                var order = await _genericOrderRepository.GetByIdAsync(id);
+                var order = await _orderRepository.GetOrderByIdWithDetailAsync(id);
                 if (order is null)
                 {
                     return new ResponseDto<DetailOrderDto>

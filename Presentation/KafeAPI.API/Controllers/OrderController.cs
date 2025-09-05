@@ -20,6 +20,12 @@ namespace KafeAPI.API.Controllers
             var result = await _orderService.GetAllOrder();
             return CreateResponse(result);
         }
+        [HttpGet("getallorderwithdetail")]
+        public async Task<IActionResult> GetAllOrderWithDetail()
+        {
+            var result = await _orderService.GetAllOrderWithDetail();
+            return CreateResponse(result);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdOrder(int id)
         {
