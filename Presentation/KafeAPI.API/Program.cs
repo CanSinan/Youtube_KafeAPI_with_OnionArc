@@ -10,6 +10,8 @@ using Scalar.AspNetCore;
 using FluentValidation;
 using KafeAPI.Application.Dtos.MenuItemDtos;
 using KafeAPI.Application.Dtos.TableDtos;
+using KafeAPI.Application.Dtos.OrderDtos;
+using KafeAPI.Application.Dtos.OrderItemDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,8 @@ builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 builder.Services.AddAutoMapper(cfg =>
 {
     // burada ekstra özel konfigurasyonlar ekleyebiliriz.
@@ -39,6 +43,10 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateMenuItemDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateMenuItemDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTableDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateTableDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemDto>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
