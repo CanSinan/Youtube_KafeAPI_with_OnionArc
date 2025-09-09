@@ -130,7 +130,7 @@ namespace KafeAPI.Application.Services.Concrete
                 };
             }
         }
-        public async Task<ResponseDto<object>> CreateOrder(CreateOrderDto dto)
+        public async Task<ResponseDto<object>> AddOrder(CreateOrderDto dto)
         {
             try
             {
@@ -177,6 +177,44 @@ namespace KafeAPI.Application.Services.Concrete
                 };
             }
         }
+        //public async Task<ResponseDto<object>> AddOrderItemByOrderId(AddOrderItemByOrderDto dto)
+        //{
+        //    try
+        //    {
+        //        var order = await _genericOrderRepository.GetByIdAsync(dto.OrderId);
+        //        var orderItems = await _genericOrderItemRepository.GetAllAsync();
+        //        if (order is null)
+        //        {
+        //            return new ResponseDto<object>
+        //            {
+        //                Success = false,
+        //                Data = null,
+        //                Message = "Sipariş bulunamadı.",
+        //                ErrorCode = ErrorCodes.NotFound
+        //            };
+        //        }
+        //        var result = _mapper.Map<OrderItem>(dto.OrderItem);
+        //        order.OrderItems.Add(result);
+        //        await _genericOrderRepository.UpdateAsync(order);
+
+        //        return new ResponseDto<object>
+        //        {
+        //            Success = true,
+        //            Data = null,
+        //            Message = "Sipariş başarıyla güncellendi."
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new ResponseDto<object>
+        //        {
+        //            Success = false,
+        //            Data = null,
+        //            Message = "Bir hata oluştu.",
+        //            ErrorCode = ErrorCodes.Exception
+        //        };
+        //    }
+        //}
         public async Task<ResponseDto<object>> UpdateOrder(UpdateOrderDto dto)
         {
             try
@@ -204,6 +242,18 @@ namespace KafeAPI.Application.Services.Concrete
                     };
                 }
                 var result = _mapper.Map(dto, order);
+
+                result.UpdateAt = DateTime.Now;
+                decimal totalPrice = 0;
+
+                foreach (var item in result.OrderItems)
+                {
+                    item.MenuItem = await _genericMenuItemRepository.GetByIdAsync(item.MenuItemId);
+                    item.Price = item.MenuItem.Price * item.Quantity;
+                    totalPrice += item.Price;
+                }
+                result.TotalPrice = totalPrice;
+
                 await _genericOrderRepository.UpdateAsync(result);
 
                 return new ResponseDto<object>
@@ -368,6 +418,6 @@ namespace KafeAPI.Application.Services.Concrete
             }
         }
 
-      
+       
     }
 }
