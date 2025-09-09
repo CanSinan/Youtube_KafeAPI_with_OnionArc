@@ -13,11 +13,12 @@ namespace KafeAPI.Application.Services.Concrete
     {
         private readonly IGenericRepository<Order> _genericOrderRepository;
         private readonly IGenericRepository<OrderItem> _genericOrderItemRepository;
+        private readonly IGenericRepository<MenuItem> _genericMenuItemRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateOrderDto> _createOrderValidator;
         private readonly IValidator<UpdateOrderDto> _updateOrderValidator;
-        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator, IGenericRepository<OrderItem> genericOrderItemRepository, IOrderRepository orderRepository)
+        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator, IGenericRepository<OrderItem> genericOrderItemRepository, IOrderRepository orderRepository, IGenericRepository<MenuItem> genericMenuItemRepository)
         {
             _genericOrderRepository = genericOrderRepository;
             _mapper = mapper;
@@ -25,6 +26,7 @@ namespace KafeAPI.Application.Services.Concrete
             _updateOrderValidator = updateOrderValidator;
             _genericOrderItemRepository = genericOrderItemRepository;
             _orderRepository = orderRepository;
+            _genericMenuItemRepository = genericMenuItemRepository;
         }
         public async Task<ResponseDto<List<ResultOrderDto>>> GetAllOrder()
         {
@@ -139,11 +141,22 @@ namespace KafeAPI.Application.Services.Concrete
                     {
                         Success = false,
                         Data = null,
-                        Message = string.Join("|",validate.Errors.Select(x=>x.ErrorMessage)),
+                        Message = string.Join("|", validate.Errors.Select(x => x.ErrorMessage)),
                         ErrorCode = ErrorCodes.ValidationError
                     };
                 }
                 var order = _mapper.Map<Order>(dto);
+
+                order.Status = OrderStatus.Hazirlanıyor;
+                order.CreatedAt = DateTime.Now;
+                decimal totalPrice = 0;
+                foreach (var item in order.OrderItems)
+                {
+                    item.MenuItem = await _genericMenuItemRepository.GetByIdAsync(item.MenuItemId);
+                    item.Price = item.MenuItem.Price * item.Quantity;
+                    totalPrice += item.Price;
+                }
+                order.TotalPrice = totalPrice;
                 await _genericOrderRepository.AddAsync(order);
 
                 return new ResponseDto<object>
