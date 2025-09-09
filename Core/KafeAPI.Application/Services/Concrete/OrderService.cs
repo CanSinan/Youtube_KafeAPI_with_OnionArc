@@ -224,7 +224,115 @@ namespace KafeAPI.Application.Services.Concrete
                 };
             }
         }
+        public async Task<ResponseDto<object>> UpdateOrderStatusHazir(int orderId)
+        {
+            try
+            {
+                var order = await _genericOrderRepository.GetByIdAsync(orderId);
+                if (order is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Sipariş bulunamadı.",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                order.Status = OrderStatus.Hazir;
+                await _genericOrderRepository.UpdateAsync(order);
 
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Sipariş durumu hazır olarak güncellendi."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+        public async Task<ResponseDto<object>> UpdateOrderStatusTeslimEdildi(int orderId)
+        {
+            try
+            {
+                var order = await _genericOrderRepository.GetByIdAsync(orderId);
+                if (order is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Sipariş bulunamadı.",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                order.Status = OrderStatus.TeslimEdildi;
+                await _genericOrderRepository.UpdateAsync(order);
+
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Sipariş durumu teslim edildi olarak güncellendi."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+
+        public async Task<ResponseDto<object>> UpdateOrderStatusIptalEdildi(int orderId)
+        {
+            try
+            {
+                var order = await _genericOrderRepository.GetByIdAsync(orderId);
+                if (order is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Sipariş bulunamadı.",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                order.Status = OrderStatus.IptalEdildi;
+                await _genericOrderRepository.UpdateAsync(order);
+
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Sipariş durumu iptal edildi olarak güncellendi."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
         public async Task<ResponseDto<object>> DeleteOrder(int id)
         {
             try
@@ -260,5 +368,6 @@ namespace KafeAPI.Application.Services.Concrete
             }
         }
 
+      
     }
 }

@@ -20,7 +20,7 @@ namespace KafeAPI.API.Controllers
             var result = await _orderService.GetAllOrder();
             return CreateResponse(result);
         }
-        [HttpGet("getallorderwithdetail")]
+        [HttpGet("getAllOrderWithDetail")]
         public async Task<IActionResult> GetAllOrderWithDetail()
         {
             var result = await _orderService.GetAllOrderWithDetail();
@@ -45,7 +45,24 @@ namespace KafeAPI.API.Controllers
             var result = await _orderService.UpdateOrder(dto);
             return CreateResponse(result);
         }
-
+        [HttpPut("updateOrderStatusHazir")]
+        public async Task<IActionResult> UpdateOrderStatusHazır(int orderId)
+        {
+            var result = await _orderService.UpdateOrderStatusHazir(orderId);
+            return CreateResponse(result);
+        }
+        [HttpPut("updateOrderStatusTeslimEdildi")]
+        public async Task<IActionResult> UpdateOrderStatusTeslimEdildi(int orderId)
+        {
+            var result = await _orderService.UpdateOrderStatusTeslimEdildi(orderId);
+            return CreateResponse(result);
+        }
+        [HttpPut("updateOrderStatusIptalEdildi")]
+        public async Task<IActionResult> UpdateOrderStatusIptalEdildi(int orderId)
+        {
+            var result = await _orderService.UpdateOrderStatusIptalEdildi(orderId);
+            return CreateResponse(result);
+        }
         [HttpDelete]
         public async Task<IActionResult> DeleteOrder(int id)
         {
