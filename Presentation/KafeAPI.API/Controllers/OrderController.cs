@@ -36,9 +36,15 @@ namespace KafeAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrder([FromBody] CreateOrderDto dto)
         {
-            var result = await _orderService.CreateOrder(dto);
+            var result = await _orderService.AddOrder(dto);
             return CreateResponse(result);
         }
+        //[HttpPut("addOrderItemByOrder")]
+        //public async Task<IActionResult> AddOrderItemByOrder([FromBody] AddOrderItemByOrderDto dto)
+        //{
+        //    var result = await _orderService.AddOrderItemByOrderId(dto);
+        //    return CreateResponse(result);
+        //}
         [HttpPut]
         public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderDto dto)
         {

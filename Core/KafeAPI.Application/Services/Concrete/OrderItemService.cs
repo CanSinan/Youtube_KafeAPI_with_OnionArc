@@ -90,7 +90,7 @@ namespace KafeAPI.Application.Services.Concrete
             }
         }
 
-        public async Task<ResponseDto<object>> CreateOrderItem(CreateOrderItemDto dto)
+        public async Task<ResponseDto<object>> AddOrderItem(CreateOrderItemDto dto)
         {
             try
             {

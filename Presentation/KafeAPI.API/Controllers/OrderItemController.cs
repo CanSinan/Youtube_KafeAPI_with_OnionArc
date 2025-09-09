@@ -30,7 +30,7 @@ namespace KafeAPI.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrderItem([FromBody] CreateOrderItemDto dto)
         {
-            var result = await _orderItemService.CreateOrderItem(dto);
+            var result = await _orderItemService.AddOrderItem(dto);
             return CreateResponse(result);
         }
         [HttpPut]

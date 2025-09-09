@@ -7,7 +7,7 @@ namespace KafeAPI.Application.Services.Abstract
     {
         Task<ResponseDto<List<ResultOrderItemDto>>> GetAllOrderItems();
         Task<ResponseDto<DetailOrderItemDto>> GetOrderItemById(int id);
-        Task<ResponseDto<object>> CreateOrderItem(CreateOrderItemDto dto);
+        Task<ResponseDto<object>> AddOrderItem(CreateOrderItemDto dto);
         Task<ResponseDto<object>> UpdateOrderItem(UpdateOrderItemDto dto);
         Task<ResponseDto<object>> DeleteOrderItem(int id);
     }
