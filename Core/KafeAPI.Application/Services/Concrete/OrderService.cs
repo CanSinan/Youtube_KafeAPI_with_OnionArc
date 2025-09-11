@@ -2,10 +2,10 @@
 using FluentValidation;
 using KafeAPI.Application.Dtos.OrderDtos;
 using KafeAPI.Application.Dtos.ResponseDtos;
+using KafeAPI.Application.Dtos.TableDtos;
 using KafeAPI.Application.Interfaces;
 using KafeAPI.Application.Services.Abstract;
 using KafeAPI.Domain.Entities;
-using System.Net.Http.Headers;
 
 namespace KafeAPI.Application.Services.Concrete
 {
@@ -14,11 +14,12 @@ namespace KafeAPI.Application.Services.Concrete
         private readonly IGenericRepository<Order> _genericOrderRepository;
         private readonly IGenericRepository<OrderItem> _genericOrderItemRepository;
         private readonly IGenericRepository<MenuItem> _genericMenuItemRepository;
+        private readonly IGenericRepository<Table> _genericTableRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateOrderDto> _createOrderValidator;
         private readonly IValidator<UpdateOrderDto> _updateOrderValidator;
-        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator, IGenericRepository<OrderItem> genericOrderItemRepository, IOrderRepository orderRepository, IGenericRepository<MenuItem> genericMenuItemRepository)
+        public OrderService(IGenericRepository<Order> genericOrderRepository, IMapper mapper, IValidator<CreateOrderDto> createOrderValidator, IValidator<UpdateOrderDto> updateOrderValidator, IGenericRepository<OrderItem> genericOrderItemRepository, IOrderRepository orderRepository, IGenericRepository<MenuItem> genericMenuItemRepository, IGenericRepository<Table> genericTableRepository)
         {
             _genericOrderRepository = genericOrderRepository;
             _mapper = mapper;
@@ -27,6 +28,7 @@ namespace KafeAPI.Application.Services.Concrete
             _genericOrderItemRepository = genericOrderItemRepository;
             _orderRepository = orderRepository;
             _genericMenuItemRepository = genericMenuItemRepository;
+            _genericTableRepository = genericTableRepository;
         }
         public async Task<ResponseDto<List<ResultOrderDto>>> GetAllOrder()
         {
@@ -159,6 +161,10 @@ namespace KafeAPI.Application.Services.Concrete
                 order.TotalPrice = totalPrice;
                 await _genericOrderRepository.AddAsync(order);
 
+                var table = await _genericTableRepository.GetByIdAsync(dto.TableId);
+                //var newTable = _mapper.Map<DetailTableDto>(table);
+                table.IsActive = false;
+                await _genericTableRepository.UpdateAsync(table);
                 return new ResponseDto<object>
                 {
                     Success = true,
@@ -383,6 +389,45 @@ namespace KafeAPI.Application.Services.Concrete
                 };
             }
         }
+        public async Task<ResponseDto<object>> UpdateOrderStatusOdendi(int orderId)
+        {
+            try
+            {
+                var order = await _genericOrderRepository.GetByIdAsync(orderId);
+                if (order is null)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Sipariş bulunamadı.",
+                        ErrorCode = ErrorCodes.NotFound
+                    };
+                }
+                order.Status = OrderStatus.Odendi;
+                await _genericOrderRepository.UpdateAsync(order);
+                var table = await _genericTableRepository.GetByIdAsync(order.TableId);
+                table.IsActive = true;
+                await _genericTableRepository.UpdateAsync(table);
+
+                return new ResponseDto<object>
+                {
+                    Success = true,
+                    Data = null,
+                    Message = "Sipariş durumu ödendi olarak güncellendi."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
         public async Task<ResponseDto<object>> DeleteOrder(int id)
         {
             try
@@ -418,6 +463,6 @@ namespace KafeAPI.Application.Services.Concrete
             }
         }
 
-       
+
     }
 }

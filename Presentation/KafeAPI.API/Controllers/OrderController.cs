@@ -69,6 +69,12 @@ namespace KafeAPI.API.Controllers
             var result = await _orderService.UpdateOrderStatusIptalEdildi(orderId);
             return CreateResponse(result);
         }
+        [HttpPut("updateOrderStatusOdendi")]
+        public async Task<IActionResult> UpdateOrderStatusOdendi(int orderId)
+        {
+            var result = await _orderService.UpdateOrderStatusOdendi(orderId);
+            return CreateResponse(result);
+        }
         [HttpDelete]
         public async Task<IActionResult> DeleteOrder(int id)
         {

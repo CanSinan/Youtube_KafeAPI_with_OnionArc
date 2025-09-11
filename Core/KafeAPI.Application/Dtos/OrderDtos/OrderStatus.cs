@@ -6,5 +6,6 @@
         public const string Hazir = "HAZIR";
         public const string TeslimEdildi = "TESLIM_EDILDI";
         public const string IptalEdildi = "IPTAL_EDILDI";
+        public const string Odendi = "ODENDI";
     }
 }

@@ -65,7 +65,6 @@ namespace KafeAPI.Application.Services.Concrete
             try
             {
                 var menuItem = await _genericMenuItemRepository.GetByIdAsync(id);
-                var category = await _genericCategoryRepository.GetByIdAsync(menuItem.CategoryId);
                 if (menuItem is null)
                 {
                     return new ResponseDto<DetailMenuItemDto>
@@ -76,6 +75,8 @@ namespace KafeAPI.Application.Services.Concrete
                         Message = "Menu Item bulunamadı"
                     };
                 }
+                var category = await _genericCategoryRepository.GetByIdAsync(menuItem.CategoryId);
+
                 var result = _mapper.Map<DetailMenuItemDto>(menuItem);
                 return new ResponseDto<DetailMenuItemDto>
                 {
