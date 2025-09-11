@@ -14,6 +14,7 @@ namespace KafeAPI.Application.Services.Abstract
         Task<ResponseDto<object>> UpdateOrderStatusHazir(int orderId);
         Task<ResponseDto<object>> UpdateOrderStatusTeslimEdildi(int orderId);
         Task<ResponseDto<object>> UpdateOrderStatusIptalEdildi(int orderId);
+        Task<ResponseDto<object>> UpdateOrderStatusOdendi(int orderId);
         Task<ResponseDto<object>> DeleteOrder(int id);
         //Task<ResponseDto<object>> AddOrderItemByOrderId(AddOrderItemByOrderDto dto);
     }
