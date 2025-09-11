@@ -17,6 +17,7 @@ namespace KafeAPI.Application.Mapping
             CreateMap<Category, DetailCategoryDto>().ReverseMap();
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
+            CreateMap<Category, ResultCategoriesWithMenuDto>().ReverseMap();
             #endregion
 
             #region MenuItem
@@ -24,6 +25,7 @@ namespace KafeAPI.Application.Mapping
             CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();
             CreateMap<MenuItem, CreateMenuItemDto>().ReverseMap();
             CreateMap<MenuItem, UpdateMenuItemDto>().ReverseMap();
+            CreateMap<MenuItem, CategoriesMenuItemDto>().ReverseMap();
             #endregion
 
             #region Table

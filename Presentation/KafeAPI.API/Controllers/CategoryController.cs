@@ -21,24 +21,35 @@ namespace KafeAPI.API.Controllers
             var result = await _categoryService.GetAllCategories();
             return CreateResponse(result);
         }
+
+        [HttpGet("getAllCategoriesWithMenuItems")]
+        public async Task<IActionResult> GetAllCategoriesWithMenuItems()
+        {
+            var result = await _categoryService.GetCategoriesWithMenuItems();
+            return CreateResponse(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdCategory(int id)
         {
             var result = await _categoryService.GetByIdCategory(id);
             return CreateResponse(result);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
         {
             var result = await _categoryService.AddCategory(dto);
             return CreateResponse(result);
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryDto dto)
         {
             var result = await _categoryService.UpdateCategory(dto);
             return CreateResponse(result);
         }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory(int id)
         {
