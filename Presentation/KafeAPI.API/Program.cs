@@ -12,6 +12,7 @@ using KafeAPI.Application.Dtos.MenuItemDtos;
 using KafeAPI.Application.Dtos.TableDtos;
 using KafeAPI.Application.Dtos.OrderDtos;
 using KafeAPI.Application.Dtos.OrderItemDtos;
+using KafeAPI.Application.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,11 @@ builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddScoped<TokenHelpers>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 builder.Services.AddAutoMapper(cfg =>
