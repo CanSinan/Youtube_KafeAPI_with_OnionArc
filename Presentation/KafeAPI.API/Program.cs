@@ -16,6 +16,8 @@ using KafeAPI.Application.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using KafeAPI.Persistence.AppContext.Identity;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,22 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     var configuration = builder.Configuration.GetConnectionString("DefaultConnection");
     opt.UseSqlServer(configuration);
 });
+builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
+{
+    var configuration = builder.Configuration.GetConnectionString("DefaultConnection");
+    opt.UseSqlServer(configuration);
+});
+builder.Services.AddIdentity<AppIdentityUser, AppIdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<AppIdentityDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
