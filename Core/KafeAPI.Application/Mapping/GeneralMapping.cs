@@ -4,6 +4,7 @@ using KafeAPI.Application.Dtos.MenuItemDtos;
 using KafeAPI.Application.Dtos.OrderDtos;
 using KafeAPI.Application.Dtos.OrderItemDtos;
 using KafeAPI.Application.Dtos.TableDtos;
+using KafeAPI.Application.Dtos.UserDtos;
 using KafeAPI.Domain.Entities;
 
 namespace KafeAPI.Application.Mapping
@@ -48,6 +49,11 @@ namespace KafeAPI.Application.Mapping
             CreateMap<Order, CreateOrderDto>().ReverseMap();
             CreateMap<Order, UpdateOrderDto>().ReverseMap();
             #endregion
+
+            #region User
+            //CreateMap<AppIdentityUser, RegisterDto>().ReverseMap();
+            #endregion
+
         }
     }
 }
