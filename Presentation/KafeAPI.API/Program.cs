@@ -51,6 +51,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<TokenHelpers>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(cfg =>
 {
     // burada ekstra özel konfigurasyonlar ekleyebiliriz.
