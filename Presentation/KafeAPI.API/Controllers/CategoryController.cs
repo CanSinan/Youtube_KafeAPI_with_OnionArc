@@ -37,7 +37,7 @@ namespace KafeAPI.API.Controllers
             return CreateResponse(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
         {
