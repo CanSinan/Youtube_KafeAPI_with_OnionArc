@@ -6,6 +6,7 @@ namespace KafeAPI.Application.Services.Abstract
     public interface IUserService
     {
         Task<ResponseDto<object>> Register(RegisterDto dto);
-
+        Task<ResponseDto<object>> CreateRole(string roleName);
+        Task<ResponseDto<object>> AddRoleToUser(string email, string role);
     }
 }
