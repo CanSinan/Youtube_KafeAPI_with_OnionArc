@@ -25,7 +25,8 @@ namespace KafeAPI.Persistence.Repositories
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                return new UserDto { Id = user.Id, Email = user.Email };
+                var userRole = await _userManager.GetRolesAsync(user);
+                return new UserDto { Id = user.Id, Email = user.Email, Role = userRole.FirstOrDefault() };
             }
             return new UserDto();
         }
