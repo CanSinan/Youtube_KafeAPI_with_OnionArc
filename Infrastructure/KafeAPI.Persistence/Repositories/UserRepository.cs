@@ -9,12 +9,16 @@ namespace KafeAPI.Persistence.Repositories
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly SignInManager<AppIdentityUser> _signInManager;
+        private readonly RoleManager<AppIdentityRole> _roleManager;
 
-        public UserRepository(UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager)
+        public UserRepository(UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager, RoleManager<AppIdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
+
+
 
         public async Task<UserDto> ChechkUser(string email)
         {
@@ -31,6 +35,37 @@ namespace KafeAPI.Persistence.Repositories
             var user = await _userManager.FindByEmailAsync(dto.Email);
             var result = await _signInManager.PasswordSignInAsync(user, dto.Password, false, false);
             return result;
+        }
+
+        public async Task<bool> CreateRoleAsync(string roleName)
+        {
+            if (string.IsNullOrEmpty(roleName))
+                return false;
+
+            var roleExist = await _roleManager.RoleExistsAsync(roleName);
+            if (roleExist)
+                return false;
+
+            var result = await _roleManager.CreateAsync(new AppIdentityRole { Name = roleName });
+            if (result.Succeeded)
+                return true;
+
+            return false;
+        }
+        public async Task<bool> AddRoleToUserAsync(string email, string role)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            var roleExit = await _roleManager.RoleExistsAsync(role);
+            if (roleExit)
+            {
+                var result = await _userManager.AddToRoleAsync(user, role);
+                if (result.Succeeded)
+                    return true;
+
+            }
+            return false;
         }
 
         public async Task<SignInResult> LoginAsync(LoginDto dto)

@@ -17,6 +17,81 @@ namespace KafeAPI.Application.Services.Concrete
             _registerValidator = registerValidator;
         }
 
+        public async Task<ResponseDto<object>> AddRoleToUser(string email, string role)
+        {
+            try
+            {
+                var result = await _userRepository.AddRoleToUserAsync(email, role);
+                if (result)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = true,
+                        Data = null,
+                        Message = "Rol ataması yapıldı."
+                    };
+                }
+                else
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Rol ataması yapılırken hata oluştu.",
+                        ErrorCode = ErrorCodes.BadRequest
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+
+        public async Task<ResponseDto<object>> CreateRole(string roleName)
+        {
+            try
+            {
+                var result = await _userRepository.CreateRoleAsync(roleName);
+                if (result)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = true,
+                        Data = null,
+                        Message = "Rol başarıyla oluşturuldu."
+                    };
+                }
+                else
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = "Rol oluşturulurken hata oluştu.",
+                        ErrorCode = ErrorCodes.BadRequest
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
+
         public async Task<ResponseDto<object>> Register(RegisterDto dto)
         {
             try
