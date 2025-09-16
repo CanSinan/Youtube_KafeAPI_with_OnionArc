@@ -9,5 +9,8 @@ namespace KafeAPI.Application.Interfaces
         Task<SignInResult> LoginAsync(LoginDto dto);
         Task LogoutAsync();
         Task<IdentityResult> RegisterAsync(RegisterDto dto);
+        Task<UserDto> ChechkUser(string email);
+        Task<SignInResult> ChechkUserWithPassword(LoginDto dto);
+        
     }
 }
