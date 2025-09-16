@@ -21,7 +21,6 @@ namespace KafeAPI.Application.Services.Concrete
         {
             try
             {
-                //var checkUser = dto.Email == "sinan51can@gmail.com" ? true : false;
                 var checkUser = await _userRepository.ChechkUser(dto.Email);
                 if (checkUser.Id != null)
                 {
@@ -32,7 +31,7 @@ namespace KafeAPI.Application.Services.Concrete
                         {
                             Email = dto.Email,
                             Id = dto.Email,
-                            Role = "Admin"
+                            Role = checkUser.Role
                         };
                         string token = _tokenHelpers.GenerateToken(tokenDto);
                         return new ResponseDto<object>
