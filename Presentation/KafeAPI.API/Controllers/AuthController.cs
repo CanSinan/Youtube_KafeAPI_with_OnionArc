@@ -1,12 +1,10 @@
-﻿using KafeAPI.Application.Dtos.AuthDtos;
-using KafeAPI.Application.Dtos.UserDtos;
+﻿using KafeAPI.Application.Dtos.UserDtos;
 using KafeAPI.Application.Services.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KafeAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : BaseController
     {

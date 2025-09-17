@@ -37,7 +37,7 @@ namespace KafeAPI.Application.Services.Concrete
                         return new ResponseDto<object>
                         {
                             Success = true,
-                            Data = token
+                            Data = new { token = token }
                         };
                     }
                     return new ResponseDto<object>
