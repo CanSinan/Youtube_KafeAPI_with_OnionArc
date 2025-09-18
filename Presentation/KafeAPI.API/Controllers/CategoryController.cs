@@ -1,5 +1,4 @@
 ﻿using KafeAPI.Application.Dtos.CategoryDtos;
-using KafeAPI.Application.Dtos.ResponseDtos;
 using KafeAPI.Application.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +10,21 @@ namespace KafeAPI.API.Controllers
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
-
-        public CategoryController(ICategoryService categoryService)
+        private readonly Serilog.ILogger _log;
+        public CategoryController(ICategoryService categoryService, Serilog.ILogger log)
         {
             _categoryService = categoryService;
+            _log = log;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
+            _log.Information("get-categories");
             var result = await _categoryService.GetAllCategories();
+            _log.Information("iget-categories: " + result.Success);
+            _log.Warning("wget-categories: " + result.Success);
+            _log.Error("eget-categories: " + result.Success);
+            _log.Debug("dget-categories: " + result.Success);
             return CreateResponse(result);
         }
 
