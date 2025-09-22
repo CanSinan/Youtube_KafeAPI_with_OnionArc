@@ -22,6 +22,7 @@ using Serilog;
 using KafeAPI.Persistence.Middlewares;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,7 +109,16 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
-//serilog config
+
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(
+    builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+    
+    
+    //serilog config
+
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -137,6 +147,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
 
