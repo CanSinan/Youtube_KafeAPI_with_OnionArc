@@ -138,5 +138,66 @@ namespace KafeAPI.Application.Services.Concrete
                 };
             }
         }
+
+        public async Task<ResponseDto<object>> RegisterDefault(RegisterDto dto)
+        {
+            try
+            {
+                var validate = await _registerValidator.ValidateAsync(dto);
+                if (!validate.IsValid)
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = string.Join("|", validate.Errors.Select(e => e.ErrorMessage)),
+                        ErrorCode = ErrorCodes.ValidationError
+                    };
+                }
+                var result = await _userRepository.RegisterAsync(dto);
+                if (result.Succeeded)
+                {
+                    var roleResult = await _userRepository.AddRoleToUserAsync(dto.Email, "user");
+                    if (roleResult)
+                    {
+                        return new ResponseDto<object>
+                        {
+                            Success = true,
+                            Data = null,
+                            Message = "Kayıt işlemi başarılı bir şekilde gerçekleştirildi.",
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseDto<object>
+                        {
+                            Success = true,
+                            Data = null,
+                            Message = "Kullanıcı oluşturuldu rol ataması yaparken bir hata oluştu. Lütfen yetkiliye başvurunuz.",
+                            ErrorCode = ErrorCodes.BadRequest
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseDto<object>
+                    {
+                        Success = false,
+                        Data = null,
+                        Message = string.Join("|", result.Errors.Select(e => e.Description))
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = "Bir hata oluştu.",
+                    ErrorCode = ErrorCodes.Exception
+                };
+            }
+        }
     }
 }
