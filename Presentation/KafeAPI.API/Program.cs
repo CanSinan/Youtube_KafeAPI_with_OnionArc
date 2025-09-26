@@ -23,6 +23,7 @@ using KafeAPI.Persistence.Middlewares;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using AspNetCoreRateLimit;
+using KafeAPI.Application.Dtos.CafeInfoDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,7 @@ builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICafeInfoService, CafeInfoService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<ITableService, TableService>();
@@ -82,6 +84,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateCafeInfoDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateCafeInfoDto>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
